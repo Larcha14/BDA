@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: abd_lab_1
+    environment:
+      POSTGRES_DB: "bd_abd_lab_1"
+      POSTGRES_USER: "server"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./src/init_base.sql:/docker-entrypoint-initdb.d/init.sql  
+      - ./data:/data  
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U server -d bd_abd_lab_1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
